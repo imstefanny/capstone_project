@@ -10,7 +10,7 @@ function Home() {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortConfig, setSortConfig] = useState({ key: "population", direction: "desc" });
     const [currentPage, setCurrentPage] = useState(1);
-    const [countriesPerPage, setCountriesPerPage] = useState(10);
+    const [countriesPerPage, setCountriesPerPage] = useState(15);
 
     useEffect(() => {
         const result = countries.filter(country => {
@@ -52,21 +52,13 @@ function Home() {
         setCurrentPage(currentPage - 1);
     }
 
-    function handleCountriesPerPageChange(e) {
-        setCountriesPerPage(parseInt(e.target.value));
-        setCurrentPage(1);
-    }
-
     return (
         <>
             <Header
                 search={{searchTerm, setSearchTerm}}
                 pagination={{
                     currentPage,
-                    setCurrentPage,
                     totalPages,
-                    countriesPerPage,
-                    handleCountriesPerPageChange,
                     handleNextPage,
                     handlePrevPage,
                 }}
