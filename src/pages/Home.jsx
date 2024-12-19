@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/Home/Header";
 import Table from "../components/Home/Table";
+import LoadingSpinner from '../components/utils/LoadingSpinner';
+import Kanban from "../components/Home/Kanban";
 
 function Home() {
     const countries = useSelector(state => state.countries);
@@ -11,6 +13,8 @@ function Home() {
     const [sortConfig, setSortConfig] = useState({ key: "population", direction: "desc" });
     const [currentPage, setCurrentPage] = useState(1);
     const [countriesPerPage, setCountriesPerPage] = useState(15);
+    const [isLoading, setIsLoading] = useState(true);
+    const [viewMode, setViewMode] = useState("list");
 
     useEffect(() => {
         const result = countries.filter(country => {
@@ -18,6 +22,7 @@ function Home() {
         });
         setFilteredCountries(result);
         setCurrentPage(1);
+        if (countries.length > 0) setIsLoading(false);
     }, [searchTerm, countries]);
 
     useEffect(() => {
@@ -52,6 +57,10 @@ function Home() {
         setCurrentPage(currentPage - 1);
     }
 
+    function handleViewMode(mode) {
+        setViewMode(mode);
+    }
+
     return (
         <>
             <Header
@@ -62,8 +71,14 @@ function Home() {
                     handleNextPage,
                     handlePrevPage,
                 }}
+                view={{viewMode, handleViewMode}}
             />
-            <Table datas={currentCountries} handleSort={handleSort} sortConfig={sortConfig} currentPage={currentPage} countriesPerPage={countriesPerPage}/>
+            {isLoading && <LoadingSpinner />}
+            {!isLoading && 
+                viewMode === "list" ?
+                <Table datas={currentCountries} handleSort={handleSort} sortConfig={sortConfig} currentPage={currentPage} countriesPerPage={countriesPerPage}/> :
+                <Kanban datas={currentCountries} onClick={() => {console.log("woi")}} />
+            }
         </>
     )
 };
